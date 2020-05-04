@@ -63,10 +63,11 @@ class Flower extends Group {
             this.state.twirl -= Math.PI / 8;
             this.rotation.y += Math.PI / 8;
         }
-
+ 
         // Advance tween animations, if any exist
         TWEEN.update();
     }
+
 }
 
 export default Flower;

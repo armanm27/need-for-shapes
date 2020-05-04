@@ -8,10 +8,10 @@
  */
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SeedScene } from 'scenes';
+import { DemoScene } from 'scenes';
 
 // Initialize core ThreeJS components
-const scene = new SeedScene();
+const scene = new DemoScene();
 const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
 
@@ -34,6 +34,31 @@ controls.enablePan = false;
 controls.minDistance = 4;
 controls.maxDistance = 16;
 controls.update();
+
+
+
+// Direction Handler
+const keyPressed = (event) => {
+    if (event) {
+        if (event.key  == "ArrowUp" || event.key  == "ArrowDown" || event.key  == "ArrowLeft" || event.key  == "ArrowRight") {
+            // console.log(event.key);
+            scene.updateKeyPress(event);
+        }
+    }
+};
+keyPressed();
+window.addEventListener('keydown', keyPressed, false);
+
+const keyReleased = (event) => {
+    if (event) {
+        if (event.key  == "ArrowUp" || event.key  == "ArrowDown" || event.key  == "ArrowLeft" || event.key  == "ArrowRight") {
+            // console.log(event.key);
+            scene.updateKeyUp(event);
+        }
+    }
+};
+keyReleased();
+window.addEventListener('keyup', keyReleased, false);
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
