@@ -1,11 +1,13 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color } from 'three';
-import { Flower, Land, Ground, Player1 } from 'objects';
+import { Scene, Color, Vector3 } from 'three';
+import { Flower, Land, Ground, Player1, Target } from 'objects';
 import { BasicLights } from 'lights';
+// import Target from '../objects/Target/Target';
 // import { Player1 } from '../objects/Player1';
 // import { Ground } from '../objects/Ground';
 
 class DemoScene extends Scene {
+
     constructor() {
         // Call parent Scene() constructor
         super();
@@ -18,7 +20,13 @@ class DemoScene extends Scene {
             upArrowPushed: false,
             downArrowPushed: false,
             leftArrowPushed: false,
-            rightArrowPushed: false
+            rightArrowPushed: false,
+            player1Position: new Vector3(0,0,0),
+            activeTargets: [],
+            fieldSize: 250,
+            numTargets: 50,
+            targetSize: 3,
+            grid: [],
         };
 
         // Set background to a nice color
@@ -32,9 +40,84 @@ class DemoScene extends Scene {
         const lights = new BasicLights();
         this.add(ground, player1, lights);
 
-        // Populate GUI
-        // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
+        // initialize grid
+        this.initGrid();
+        
+        // Populate playing field with targets
+        this.populateTargets();
     }
+    // helper function to initialize grid to false at beginning of round
+    initGrid() {
+        let size = Math.floor(this.state.fieldSize / this.state.targetSize);
+        // set all grid spaces to false
+        for (let i = 0; i <= size; i++) {
+            for (let j = 0; j <= size; j++) {
+                // let oneD = index(i,j);
+                // don't place on top of player1
+                if (i >= size / 2 - 1 && i <= size / 2 + 1 && j >= size / 2 - 1 && j<= size / 2 + 1) {
+                    this.state.grid.push(true);
+                    continue;
+                }
+                this.state.grid.push(false);
+            }
+        }
+    }
+    // helper function to relate 2d grid to 1d array
+    // * inclusive *
+    index(i, j) {
+        let size = Math.floor(this.state.fieldSize / this.state.targetSize);
+        return i + j * (size + 1);
+    }
+    // fills in every grid spot touched by coordinates
+    updateGrid(x, z) {
+        let size = Math.floor(this.state.fieldSize / this.state.targetSize);
+        for (let i = x - 1; i <= x + 1; i++) {
+            for (let j = z - 1; j <= z + 1; j++) {
+                if (i < 0 || i > size || j < 0 || j > size) {
+                    continue;
+                }
+                this.state.grid[this.index(i,j)] = true;
+            }
+        }
+    }
+    // function that 
+    spotFromCoord(x,z) {
+        let spaceSize = Math.floor(this.state.fieldSize / this.state.targetSize);
+        // find center x & z coords
+        let midX = x + (this.state.targetSize / 2);
+        let midZ = z + (this.state.targetSize / 2);
+
+        let i = Math.floor(midX + (this.state.fieldSize / 2) / spaceSize);
+        let j = Math.floor(midZ + (this.state.fieldSize / 2) / spaceSize);
+        return [i,j];
+    }
+
+
+    // populate targets using semi-random sampling
+    populateTargets() {
+        var min = -1 * this.state.fieldSize / 2;
+        var max = this.state.fieldSize / 2;
+        console.log(min);
+        console.log(max);
+        for (let i = 0; i < this.state.numTargets; i++) {
+            let x = (Math.random() * (max - min)) + min;
+            let z = (Math.random() * (max - min)) + min;
+            // console.log(x);
+            // console.log(z);
+            // check if danger close to any grid spaces that are already taken up
+            let coords = this.spotFromCoord(x,z);
+            while (this.state.grid[this.index(coords[0], coords[1])]) {
+                x = (Math.random() * (max - min)) + min;
+                z = (Math.random() * (max - min)) + min;
+                coords = this.spotFromCoord(x,z);
+            }
+            const target = new Target(this, x, 0, z);
+            this.updateGrid(coords[0], coords[1]);
+            this.add(target);
+            this.state.activeTargets.push(target);
+        }
+    }
+
 
     addToUpdateList(object) {
         this.state.updateList.push(object);

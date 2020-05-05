@@ -16,7 +16,7 @@ class Player1 extends Group {
             // twirl: 0,
             // position: new Vector3(0, 1, 0),
             acceleration: new Vector3(0,0,0),
-            startingPos: new Vector3(0,1,0),
+            startingPos: new Vector3(0,0,0),
             velocity: new Vector3(0,0,0),
             terminalVelocity: new Vector3(100,100,100),
         };
@@ -101,9 +101,9 @@ class Player1 extends Group {
             // else {
             //     this.state.velocity.sub(keyMap.ArrowRight);
             // }
-        console.log(this.state.velocity);
+        // console.log(this.state.velocity);
         this.position.add(this.state.velocity);
-
+        parentState.player1Position.set(this.position);
     }
 
 }
