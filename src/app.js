@@ -9,6 +9,11 @@
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DemoScene } from 'scenes';
+import { Scoreboard } from 'scoreboard';
+// import { Timer } from 'timer';
+
+// initialize scoreboard
+var scoreboard = new Scoreboard(0, 10);
 
 // Initialize core ThreeJS components
 const scene = new DemoScene();
@@ -35,7 +40,7 @@ controls.minDistance = 4;
 controls.maxDistance = 16;
 controls.update();
 
-
+window.setInterval(function() { scoreboard.updateTime() }, 1000);
 
 // Direction Handler
 const keyPressed = (event) => {
@@ -43,6 +48,8 @@ const keyPressed = (event) => {
         if (event.key  == "ArrowUp" || event.key  == "ArrowDown" || event.key  == "ArrowLeft" || event.key  == "ArrowRight") {
             // console.log(event.key);
             scene.updateKeyPress(event);
+            var score = scoreboard.getScore();
+            scoreboard.updateScore(score + 1);
         }
     }
 };
