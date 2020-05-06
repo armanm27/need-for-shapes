@@ -47,7 +47,6 @@ module.exports = {
             objects$: path.resolve(__dirname, 'src/components/objects'),
             scenes$: path.resolve(__dirname, 'src/components/scenes'),
             scoreboard$: path.resolve(__dirname, 'src/components/scoreboard'),
-            timer$: path.resolve(__dirname, 'src/components/timer'),
         },
     },
     plugins: [
