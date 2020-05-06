@@ -18,7 +18,7 @@ class Player1 extends Group {
             acceleration: new Vector3(0,0,0),
             startingPos: new Vector3(0,0,0),
             velocity: new Vector3(0,0,0),
-            terminalVelocity: new Vector3(100,100,100),
+            terminalVelocity: new Vector3(100,100,100)
         };
         this.name = 'player1';
 
@@ -39,9 +39,13 @@ class Player1 extends Group {
         sphere.mesh.receiveShadow = true;
       
         let pos = this.state.startingPos;
+        this.position.copy(pos);
         sphere.mesh.position.copy(pos);
         sphere.position = pos.clone();
         sphere.prevPosition = pos.clone();
+        sphere.mesh.geometry.computeBoundingSphere();
+        sphere.mesh.geometry.boundingSphere.translate(this.state.startingPos);
+        // console.log(this);
       
         this.add(sphere.mesh); // add sphere to scene
 
@@ -69,7 +73,7 @@ class Player1 extends Group {
     //     }
     // }
 
-    update(parentState) {
+    update(parent) {
         const keyMap = {
             ArrowUp: new Vector3(0,  0,  1),
             ArrowDown: new Vector3(0,  0,  -1),
@@ -77,33 +81,51 @@ class Player1 extends Group {
             ArrowRight: new Vector3(-1,  0,  0),
         };
         this.state.velocity.set(0,0,0);
-            if (parentState.upArrowPushed == true) {
+            if (parent.state.upArrowPushed == true) {
                 this.state.velocity.add(keyMap.ArrowUp);
             }
-            // else {
-            //     this.state.velocity.sub(keyMap.ArrowUp);
-            // }
-            if (parentState.downArrowPushed == true) {
+
+            if (parent.state.downArrowPushed == true) {
                 this.state.velocity.add(keyMap.ArrowDown);
             }
-            // else {
-            //     this.state.velocity.sub(keyMap.ArrowDown);
-            // }
-            if (parentState.leftArrowPushed == true) {
+
+            if (parent.state.leftArrowPushed == true) {
                 this.state.velocity.add(keyMap.ArrowLeft);
             }
-            // else {
-            //     this.state.velocity.sub(keyMap.ArrowLeft);
-            // }
-            if (parentState.rightArrowPushed == true) {
+
+            if (parent.state.rightArrowPushed == true) {
                 this.state.velocity.add(keyMap.ArrowRight);
             }
-            // else {
-            //     this.state.velocity.sub(keyMap.ArrowRight);
-            // }
-        // console.log(this.state.velocity);
         this.position.add(this.state.velocity);
-        parentState.player1Position.set(this.position);
+        this.getSphere().position.copy(this.position);
+        // console.log(this.getSphere().geometry.boundingSphere);
+        // parentState.player1Position.set(this.position);
+        // check if collision with target
+        this.targetDetection(parent);
+        this.getSphere().geometry.boundingSphere.translate(this.state.velocity);
+    }
+    // check if player1 collided with any active targets
+    targetDetection(parent) {
+        var sphere = this.getSphere().geometry.boundingSphere;
+        var targets = parent.state.activeTargets;
+        // console.log(sphere);
+        // console.log(this.getBox(targets[0]));
+        // console.log(targets[0]);
+        // console.log(this.getSphere());
+        for (let i = 0; i < targets.length; i++) {
+            if (sphere.intersectsBox(this.getBox(targets[i]))) {
+                console.log("hit");
+                parent.updateSceneAfterHit(targets[i], i);
+            }
+        }
+    }
+    // helper function to get sphere object
+    getSphere() {
+        return this.children[0];
+    }
+    // helper function to get the bounding box of a target
+    getBox(target) {
+        return target.children[0].geometry.boundingBox;
     }
 
 }

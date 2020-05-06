@@ -1,4 +1,4 @@
-import { Group, BoxGeometry, Mesh, MeshPhongMaterial, DoubleSide, Vector3 } from 'three';
+import { Group, BoxGeometry, Mesh, MeshPhongMaterial, DoubleSide, Vector3, Box3 } from 'three';
 
 
 class Target extends Group {
@@ -11,9 +11,10 @@ class Target extends Group {
         // Init state
         this.state = {
             acceleration: new Vector3(0,0,0),
-            startingPos: new Vector3(0,0,0),
+            startingPos: new Vector3(x,y,z),
             velocity: new Vector3(0,0,0),
             terminalVelocity: new Vector3(100,100,100),
+            // boundingBox: new Box3(0,0,0),
         };
         this.name = 'target';
 
@@ -29,14 +30,22 @@ class Target extends Group {
           opacity: 0.15, // clipping is an issue, so set a low opacity
         });
         box.mesh = new Mesh(box.geometry, box.material);
-        box.mesh.position.x = x;
-        box.mesh.position.y = y;
-        box.mesh.position.z = z;
+        this.position.set(x,y,z);
+        box.mesh.position.copy(this.position);
+        // box.mesh.position.x = x;
+        // box.mesh.position.y = y;
+        // box.mesh.position.z = z;
         box.mesh.receiveShadow = true;
         box.mesh.castShadow = true;
       
-        box.geometry.computeBoundingBox();
+        box.mesh.geometry.computeBoundingBox();
+        // translate bounding box
+        box.mesh.geometry.boundingBox.translate(new Vector3(x,y,z));
         box.boundingBox = box.geometry.boundingBox.clone();
+        // this.boundingBox.setFromObject(box);
+        // console.log(this);
+        // console.log(box);
+        // this.boundingBox = box.geometry.boundingBox.clone();
       
         this.add(box.mesh);
 
@@ -44,7 +53,7 @@ class Target extends Group {
         parent.addToUpdateList(this);
     }
 
-    update(parentState) {
+    update(parent) {
         return;
     }
 

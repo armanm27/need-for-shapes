@@ -1,10 +1,8 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, Vector3 } from 'three';
-import { Flower, Land, Ground, Player1, Target } from 'objects';
+import { Ground, Player1, Target, Scoreboard } from 'objects';
 import { BasicLights } from 'lights';
-// import Target from '../objects/Target/Target';
-// import { Player1 } from '../objects/Player1';
-// import { Ground } from '../objects/Ground';
+
 
 class DemoScene extends Scene {
 
@@ -21,13 +19,20 @@ class DemoScene extends Scene {
             downArrowPushed: false,
             leftArrowPushed: false,
             rightArrowPushed: false,
-            player1Position: new Vector3(0,0,0),
+            // player1Position: new Vector3(0,0,0),
             activeTargets: [],
-            fieldSize: 250,
+            fieldSize: 150,
             numTargets: 50,
             targetSize: 3,
             grid: [],
+            scoreboard: null,
+            score: 0,
         };
+
+        const scoreboard = new Scoreboard(0,60);
+        this.state.scoreboard = scoreboard;
+        // console.log(scoreboard);
+        // console.log(this.state.scoreboard);
 
         // Set background to a nice color
         this.background = new Color(0x7ec0ee);
@@ -97,8 +102,6 @@ class DemoScene extends Scene {
     populateTargets() {
         var min = -1 * this.state.fieldSize / 2;
         var max = this.state.fieldSize / 2;
-        console.log(min);
-        console.log(max);
         for (let i = 0; i < this.state.numTargets; i++) {
             let x = (Math.random() * (max - min)) + min;
             let z = (Math.random() * (max - min)) + min;
@@ -117,7 +120,16 @@ class DemoScene extends Scene {
             this.state.activeTargets.push(target);
         }
     }
-
+    // update targets after collision detected
+    updateSceneAfterHit(hitTarget, index) {
+        this.state.activeTargets.splice(index, 1);
+        this.remove(hitTarget);
+        this.state.numTargets--;
+        this.state.score++;
+        this.state.scoreboard.updateScore(this.state.score);
+        // console.log(this.state.activeTargets);
+        // console.log(this.state.numTargets);
+    }
 
     addToUpdateList(object) {
         this.state.updateList.push(object);
@@ -147,7 +159,7 @@ class DemoScene extends Scene {
             // }
         }
         for (const obj of updateList) {
-            obj.update(this.state);
+            obj.update(this);
         }
     }
 
@@ -176,10 +188,14 @@ class DemoScene extends Scene {
             // }
         }
         for (const obj of updateList) {
-            obj.update(this.state);
+            obj.update(this);
         }    
     }
 
+    updateTime() {
+        // console.log('being called');
+        this.state.scoreboard.updateTime();
+    }
     
 
     // update(event) {
