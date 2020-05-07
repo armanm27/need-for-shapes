@@ -1,10 +1,16 @@
 class Scoreboard {
 
     constructor(initialscore, intitialtime) {
-        this.element = document.createElement("DIV");
+        this.element = document.createElement("div");
+        this.element.id = "scoreboard";
         this.element.innerText = "SCORE: " + initialscore + "   Time Left: " + intitialtime;
-        document.body.appendChild(this.element);
-        this.element.style.color = "black";
+        this.element.style.color = 'white';
+        this.element.style.background = '0x7ec0ee';
+        this.element.style.fontFamily = 'Andale Mono';
+        this.element.style.fontSize = '40px';
+        this.element.style.position = 'fixed';
+        document.body.append(this.element);
+        
 
         this.score = initialscore;
         this.time = intitialtime;
@@ -36,5 +42,7 @@ class Scoreboard {
         return this.time;
     }
 }
+
+
 
 export default Scoreboard;
