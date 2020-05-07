@@ -47,9 +47,10 @@ module.exports = {
             objects$: path.resolve(__dirname, 'src/components/objects'),
             scenes$: path.resolve(__dirname, 'src/components/scenes'),
             scoreboard$: path.resolve(__dirname, 'src/components/scoreboard'),
+            gameplay$: path.resolve(__dirname, 'src/components/gameplay'),
         },
     },
     plugins: [
-        new HtmlWebpackPlugin({ title: pkg.title, favicon: 'src/favicon.ico' }),
+        new HtmlWebpackPlugin({ title: pkg.title, favicon: 'src/favicon.ico'}),
     ],
 };
