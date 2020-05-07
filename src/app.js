@@ -6,82 +6,87 @@
  * handles window resizes.
  *
  */
-import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { DemoScene } from 'scenes';
-// import { Scoreboard } from './components/scoreboard';
-// import { Timer } from 'timer';
 
-// initialize scoreboard
-// var scoreboard = new Scoreboard(0, 60);
+// import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// import { DemoScene } from 'scenes';
+import { Gameplay } from 'gameplay';
+ 
+ var theme = '#ff8f00';
 
-// Initialize core ThreeJS components
-const scene = new DemoScene();
-const camera = new PerspectiveCamera();
-const renderer = new WebGLRenderer({ antialias: true });
+// set background color
+document.body.style.background = theme;
 
-// Set up camera
-camera.position.set(6, 3, -10);
-camera.lookAt(new Vector3(0, 0, 0));
+// Title 
+var title = document.createElement('div');
+title.id = 'title';
+title.innerText = 'NEED for SHAPES';
+title.style.color = 'white';
+title.style.fontFamily = "'Raleway', sans-serif";
+title.style.fontSize = '62px';
+title.style.fontWeight = '800';
+title.style.lineHeight = '200px';
+title.style.margin = '0 0 24px';
+title.style.textAlign = 'center';
+title.style.textTransform = 'uppercase';
+document.body.append(title);
 
-// Set up renderer, canvas, and minor CSS adjustments
-renderer.setPixelRatio(window.devicePixelRatio);
-const canvas = renderer.domElement;
-canvas.style.display = 'block'; // Removes padding below canvas
-document.body.style.margin = 0; // Removes margin around page
-document.body.style.overflow = 'hidden'; // Fix scrolling
-document.body.appendChild(canvas);
 
-// Set up controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 4;
-controls.maxDistance = 16;
-controls.update();
+// Description of game 
 
-window.setInterval(function() { scene.updateTime() }, 1000);
+var gameDescription = "Use the arrow keys to move your chracter and collect as many targets as you can under 60 seconds. But watch out! If you hit a"  +
+"enemy zipping by, you will freeze and lose precious time. Think you can take on the " +
+"challenge? Press start to begin!"
 
-// Direction Handler
-const keyPressed = (event) => {
-    if (event) {
-        if (event.key  == "ArrowUp" || event.key  == "ArrowDown" || event.key  == "ArrowLeft" || event.key  == "ArrowRight") {
-            // console.log(event.key);
-            scene.updateKeyPress(event);
-            // var score = scoreboard.getScore();
-            // scoreboard.updateScore(score + 1);
-        }
-    }
-};
-keyPressed();
-window.addEventListener('keydown', keyPressed, false);
+var des = document.createElement('div');
+des.id = 'description';
+des.innerText = gameDescription;
+des.style.color = 'white';
+des.style.textAlign = 'center';
+des.style.lineHeight = '36px';
+des.style.fontFamily = "'Raleway', sans-serif";
+des.style.fontSize = '20px';
+document.body.append(des);
 
-const keyReleased = (event) => {
-    if (event) {
-        if (event.key  == "ArrowUp" || event.key  == "ArrowDown" || event.key  == "ArrowLeft" || event.key  == "ArrowRight") {
-            // console.log(event.key);
-            scene.updateKeyUp(event);
-        }
-    }
-};
-keyReleased();
-window.addEventListener('keyup', keyReleased, false);
 
-// Render loop
-const onAnimationFrameHandler = (timeStamp) => {
-    controls.update();
-    renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp);
-    window.requestAnimationFrame(onAnimationFrameHandler);
-};
-window.requestAnimationFrame(onAnimationFrameHandler);
+//container for button
+var container = document.createElement('div');
+container.id = 'container';
+// container.style.background = 'black';
+container.style.textAlign = 'center';
+container.style.lineHeight = '200px';
+container.style.height = '100px';
 
-// Resize Handler
-const windowResizeHandler = () => {
-    const { innerHeight, innerWidth } = window;
-    renderer.setSize(innerWidth, innerHeight);
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-};
-windowResizeHandler();
-window.addEventListener('resize', windowResizeHandler, false);
+document.body.append(container);
+
+// Start, begin, whatever you want to call it button
+var start = document.createElement('BUTTON');
+start.id = 'start';
+start.innerHTML = "Start";
+start.style.fontFamily = "'Raleway', sans.serif";
+start.style.fontSize = '10px';
+start.style.background = theme;
+start.style.color = 'white';
+start.style.width = '50%';
+start.style.height = '50px';
+start.onclick = function() {clicked()};
+start.onmouseover = function() {start.style.background = 'black'};
+start.onmouseleave = function() {start.style.background = theme};
+document.getElementById('container').append(start);
+
+
+// onclick function
+function clicked() {
+
+    document.body.removeChild(title);
+    document.body.removeChild(des);
+    var contain = document.getElementById('container');
+    contain.removeChild(start);
+    document.body.removeChild(container);
+
+
+
+    var newGame = new Gameplay(); 
+    newGame.run();
+
+}
