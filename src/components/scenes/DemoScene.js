@@ -12,7 +12,7 @@ class DemoScene extends Scene {
 
         // Init state
         this.state = {
-            gui: new Dat.GUI(), // Create GUI for scene
+            //gui: new Dat.GUI(), // Create GUI for scene
             // rotationSpeed: 1,
             updateList: [],
             upArrowPushed: false,
