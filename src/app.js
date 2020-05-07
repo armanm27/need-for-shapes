@@ -10,7 +10,7 @@
 // import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 // import { DemoScene } from 'scenes';
-import { Gameplay } from 'gameplay';
+import { Gameplay } from './components/gameplay';
  
  var theme = '#ff8f00';
 
