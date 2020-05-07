@@ -31,7 +31,9 @@ class Scoreboard {
         var newTime = this.getTime() - 1;
         
         if (newTime == 0) {
-            window.alert("You Ran Out of Time!");
+
+            var finalMessage = "You Ran Out of Time! Your final score: " + this.getScore();
+            window.alert(finalMessage);
         }
 
         this.element.innerText = "SCORE: " + this.getScore() + "   Time Left: " + newTime;
