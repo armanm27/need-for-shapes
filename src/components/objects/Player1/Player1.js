@@ -18,10 +18,10 @@ class Player1 extends Group {
             acceleration: new Vector3(0,0,0),
             startingPos: new Vector3(0,0,0),
             velocity: new Vector3(0,0,0),
-            terminalVelocity: 10,
+            terminalVelocity: 0.015,
             mass: 50,
-            standardForce: 0.000001,
-            frictionCoeff: 0.4
+            standardForce: 0.0001,
+            frictionFactor: 0.3
         };
         this.name = 'player1';
 
@@ -147,22 +147,23 @@ class Player1 extends Group {
             totalForce.addScaledVector(keyMap.ArrowRight, standardForce);
             // this.state.velocity.add(keyMap.ArrowRight);
         }
-        let eps = 0.05;
-        if (!(this.state.velocity.length() < eps)) {
-            let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
-            let frictionDirection = this.state.velocity.clone().normalize();
-            frictionDirection.x = -1 * frictionDirection.x;
-            frictionDirection.y = -1 * frictionDirection.y;
-            frictionDirection.z = -1 * frictionDirection.z;
-            frictionDirection.multiplyScalar(frictionForce);
-            frictionDirection.divideScalar(this.state.mass);
-            totalForce.add(frictionDirection);
-            // this.state.acceleration.add(frictionDirection);
-            // this.state.velocity.copy(v0.addScaledVector(a,t));
-        }
+        // let eps = 0.05;
+        // if (!(this.state.velocity.length() < eps)) {
+        //     let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
+        //     let frictionDirection = this.state.velocity.clone().normalize();
+        //     frictionDirection.x = -1 * frictionDirection.x;
+        //     frictionDirection.y = -1 * frictionDirection.y;
+        //     frictionDirection.z = -1 * frictionDirection.z;
+        //     frictionDirection.multiplyScalar(frictionForce);
+        //     frictionDirection.divideScalar(this.state.mass);
+        //     totalForce.add(frictionDirection);
+        //     // this.state.acceleration.add(frictionDirection);
+        //     // this.state.velocity.copy(v0.addScaledVector(a,t));
+        // }
         let time = parent.state.timeStamp - parent.state.prevTimeStamp;
         let fPerFrame = totalForce.multiplyScalar(time);
-        this.state.acceleration.add(fPerFrame.divideScalar(this.state.mass));
+        // this.state.acceleration.add(fPerFrame.divideScalar(this.state.mass));
+        this.state.acceleration.copy(fPerFrame.divideScalar(this.state.mass));
     }
 
     // update velocity based on Acceleration
@@ -173,34 +174,43 @@ class Player1 extends Group {
         let v0 = this.state.velocity.clone();
         this.state.velocity.addScaledVector(a, t);
         // apply friction if necessary
-        // let eps = 0.5;
-        // if (!(this.state.velocity.length() < eps)) {
-        //     let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
-        //     let frictionDirection = this.state.velocity.clone().normalize();
-        //     frictionDirection.x = -1 * frictionDirection.x;
-        //     frictionDirection.y = -1 * frictionDirection.y;
-        //     frictionDirection.z = -1 * frictionDirection.z;
-        //     frictionDirection.multiplyScalar(frictionForce);
-        //     frictionDirection.divideScalar(this.state.mass);
-        //     this.state.acceleration.add(frictionDirection);
-        //     this.state.velocity.copy(v0.addScaledVector(a,t));
+        let eps = 0.05;
+        if (!(this.state.velocity.length() < eps)) {
+            // let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
+            let frictionForce = a.length();
+            let frictionDirection = this.state.velocity.clone().normalize();
+            frictionDirection.x = -1 * frictionDirection.x;
+            frictionDirection.y = -1 * frictionDirection.y;
+            frictionDirection.z = -1 * frictionDirection.z;
+            frictionDirection.multiplyScalar(frictionForce);
+            frictionDirection.divideScalar(this.state.mass);
+            // this.state.acceleration.add(frictionDirection);
+            this.state.velocity.add(frictionDirection);
+        }
+        // check terminal velocity
+        if (this.state.velocity.length() > this.state.terminalVelocity) {
+            this.state.velocity.normalize();
+            this.state.velocity.multiplyScalar(this.state.terminalVelocity);
+        }
+        // let x = this.state.velocity.x;
+        // let z = this.state.velocity.z;
+        // let tv = this.state.terminalVelocity;
+        // if (x > tv) {
+        //     x = tv;
         // }
-        let x = this.state.velocity.x;
-        let z = this.state.velocity.z;
-        let tv = this.state.terminalVelocity;
-        if (x > tv) {
-            x = tv;
-        }
-        if (x < -1 * tv) {
-            x = -1 * tv;
-        }
-        if (z > tv) {
-            z = tv;
-        }
-        if (z < -1 * tv) {
-            z = -1 * tv;
-        }
-        this.state.velocity.set(x,0,z);
+        // if (x < -1 * tv) {
+        //     x = -1 * tv;
+        // }
+        // if (z > tv) {
+        //     z = tv;
+        // }
+        // if (z < -1 * tv) {
+        //     z = -1 * tv;
+        // }
+        // this.state.velocity.set(x,0,z);
+        console.log(this.state.velocity);
+        // reset acceleration
+        this.state.acceleration.set(0,0,0);
     }
 
     // update position based on velocity

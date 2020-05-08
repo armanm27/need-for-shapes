@@ -27,8 +27,8 @@ class DemoScene extends Scene {
             grid: [],
             scoreboard: null,
             score: 0,
-            timeStamp:0,
-            prevTimeStamp: 0,
+            timeStamp:0.0,
+            prevTimeStamp: 0.0,
         };
 
         const scoreboard = new Scoreboard(0,60);
