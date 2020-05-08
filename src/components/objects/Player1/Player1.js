@@ -14,11 +14,14 @@ class Player1 extends Group {
             // bob: true,
             // spin: this.spin.bind(this),
             // twirl: 0,
-            // position: new Vector3(0, 1, 0),
+            // position: parent.state.player1Position.clone(),
             acceleration: new Vector3(0,0,0),
             startingPos: new Vector3(0,0,0),
             velocity: new Vector3(0,0,0),
-            terminalVelocity: new Vector3(100,100,100)
+            terminalVelocity: 10,
+            mass: 50,
+            standardForce: 0.000001,
+            frictionCoeff: 0.4
         };
         this.name = 'player1';
 
@@ -35,10 +38,11 @@ class Player1 extends Group {
       
         // sphere mesh
         sphere.mesh = new Mesh(sphere.geometry, sphere.material);
-        sphere.mesh.castShadow = true;
-        sphere.mesh.receiveShadow = true;
-      
-        let pos = this.state.startingPos;
+        sphere.mesh.castShadow = false;
+        sphere.mesh.receiveShadow = false;
+              
+        let pos = parent.state.player1Position.clone();
+        // let pos = this.state.position;
         this.position.copy(pos);
         sphere.mesh.position.copy(pos);
         sphere.position = pos.clone();
@@ -74,47 +78,152 @@ class Player1 extends Group {
     // }
 
     update(parent) {
+        // if (!this.state.acceleration.equals(new Vector3(0,0,0))) {
+        //     debugger;
+        // }
+        // console.log("called");
+        // const keyMap = {
+        //     ArrowUp: new Vector3(0,  0,  1),
+        //     ArrowDown: new Vector3(0,  0,  -1),
+        //     ArrowLeft: new Vector3(1,  0,  0),
+        //     ArrowRight: new Vector3(-1,  0,  0),
+        // };
+        this.updateAcceleration(parent);
+        this.updateVelocity(parent);
+        this.updatePosition(parent);
+        // this.state.velocity.set(0,0,0);
+            // if (parent.state.upArrowPushed == true) {
+            //     this.state.velocity.add(keyMap.ArrowUp);
+            // }
+
+            // if (parent.state.downArrowPushed == true) {
+            //     this.state.velocity.add(keyMap.ArrowDown);
+            // }
+
+            // if (parent.state.leftArrowPushed == true) {
+            //     this.state.velocity.add(keyMap.ArrowLeft);
+            // }
+
+            // if (parent.state.rightArrowPushed == true) {
+            //     this.state.velocity.add(keyMap.ArrowRight);
+            // }
+        // this.position.add(this.state.velocity);
+        this.getSphere().position.copy(this.position);
+        parent.state.player1Position.copy(this.position);
+        this.targetDetection(parent);
+        let t = parent.state.timeStamp - parent.state.prevTimeStamp;
+        let translationVec = this.state.velocity.clone().multiplyScalar(t);
+        this.getSphere().geometry.boundingSphere.translate(translationVec);
+    }
+    
+    // update the acceleration state
+    updateAcceleration(parent) {
+        // const ACC_DUE_TO_GRAVITY = 
         const keyMap = {
             ArrowUp: new Vector3(0,  0,  1),
             ArrowDown: new Vector3(0,  0,  -1),
             ArrowLeft: new Vector3(1,  0,  0),
             ArrowRight: new Vector3(-1,  0,  0),
         };
-        this.state.velocity.set(0,0,0);
-            if (parent.state.upArrowPushed == true) {
-                this.state.velocity.add(keyMap.ArrowUp);
-            }
+        let standardForce = this.state.standardForce;
+        let totalForce = new Vector3();
+        // let acceleration = this.state.acceleration.clone();
+        if (parent.state.upArrowPushed == true) {
+            totalForce.addScaledVector(keyMap.ArrowUp, standardForce);
+            // this.state.velocity.add(keyMap.ArrowUp);
+        }
 
-            if (parent.state.downArrowPushed == true) {
-                this.state.velocity.add(keyMap.ArrowDown);
-            }
+        if (parent.state.downArrowPushed == true) {
+            totalForce.addScaledVector(keyMap.ArrowDown, standardForce);
+            // this.state.velocity.add(keyMap.ArrowDown);
+        }
 
-            if (parent.state.leftArrowPushed == true) {
-                this.state.velocity.add(keyMap.ArrowLeft);
-            }
+        if (parent.state.leftArrowPushed == true) {
+            totalForce.addScaledVector(keyMap.ArrowLeft, standardForce);
+            // this.state.velocity.add(keyMap.ArrowLeft);
+        }
 
-            if (parent.state.rightArrowPushed == true) {
-                this.state.velocity.add(keyMap.ArrowRight);
-            }
-        this.position.add(this.state.velocity);
-        this.getSphere().position.copy(this.position);
-        // console.log(this.getSphere().geometry.boundingSphere);
-        // parentState.player1Position.set(this.position);
-        // check if collision with target
-        this.targetDetection(parent);
-        this.getSphere().geometry.boundingSphere.translate(this.state.velocity);
+        if (parent.state.rightArrowPushed == true) {
+            totalForce.addScaledVector(keyMap.ArrowRight, standardForce);
+            // this.state.velocity.add(keyMap.ArrowRight);
+        }
+        let eps = 0.05;
+        if (!(this.state.velocity.length() < eps)) {
+            let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
+            let frictionDirection = this.state.velocity.clone().normalize();
+            frictionDirection.x = -1 * frictionDirection.x;
+            frictionDirection.y = -1 * frictionDirection.y;
+            frictionDirection.z = -1 * frictionDirection.z;
+            frictionDirection.multiplyScalar(frictionForce);
+            frictionDirection.divideScalar(this.state.mass);
+            totalForce.add(frictionDirection);
+            // this.state.acceleration.add(frictionDirection);
+            // this.state.velocity.copy(v0.addScaledVector(a,t));
+        }
+        let time = parent.state.timeStamp - parent.state.prevTimeStamp;
+        let fPerFrame = totalForce.multiplyScalar(time);
+        this.state.acceleration.add(fPerFrame.divideScalar(this.state.mass));
     }
+
+    // update velocity based on Acceleration
+    updateVelocity(parent) {
+        let a = this.state.acceleration;
+        // let v0 = this.state.velocity.copy();
+        let t = parent.state.timeStamp - parent.state.prevTimeStamp;
+        let v0 = this.state.velocity.clone();
+        this.state.velocity.addScaledVector(a, t);
+        // apply friction if necessary
+        // let eps = 0.5;
+        // if (!(this.state.velocity.length() < eps)) {
+        //     let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
+        //     let frictionDirection = this.state.velocity.clone().normalize();
+        //     frictionDirection.x = -1 * frictionDirection.x;
+        //     frictionDirection.y = -1 * frictionDirection.y;
+        //     frictionDirection.z = -1 * frictionDirection.z;
+        //     frictionDirection.multiplyScalar(frictionForce);
+        //     frictionDirection.divideScalar(this.state.mass);
+        //     this.state.acceleration.add(frictionDirection);
+        //     this.state.velocity.copy(v0.addScaledVector(a,t));
+        // }
+        let x = this.state.velocity.x;
+        let z = this.state.velocity.z;
+        let tv = this.state.terminalVelocity;
+        if (x > tv) {
+            x = tv;
+        }
+        if (x < -1 * tv) {
+            x = -1 * tv;
+        }
+        if (z > tv) {
+            z = tv;
+        }
+        if (z < -1 * tv) {
+            z = -1 * tv;
+        }
+        this.state.velocity.set(x,0,z);
+    }
+
+    // update position based on velocity
+    updatePosition(parent) {
+        let t = parent.state.timeStamp - parent.state.prevTimeStamp;
+        this.position.addScaledVector(this.state.velocity, t);
+
+    }
+
+
+
+
+
+
+
+
     // check if player1 collided with any active targets
     targetDetection(parent) {
         var sphere = this.getSphere().geometry.boundingSphere;
         var targets = parent.state.activeTargets;
-        // console.log(sphere);
-        // console.log(this.getBox(targets[0]));
-        // console.log(targets[0]);
-        // console.log(this.getSphere());
         for (let i = 0; i < targets.length; i++) {
             if (sphere.intersectsBox(this.getBox(targets[i]))) {
-                console.log("hit");
+                // console.log("hit");
                 parent.updateSceneAfterHit(targets[i], i);
             }
         }

@@ -19,7 +19,7 @@ class DemoScene extends Scene {
             downArrowPushed: false,
             leftArrowPushed: false,
             rightArrowPushed: false,
-            // player1Position: new Vector3(0,0,0),
+            player1Position: new Vector3(0,0,0),
             activeTargets: [],
             fieldSize: 150,
             numTargets: 50,
@@ -27,6 +27,8 @@ class DemoScene extends Scene {
             grid: [],
             scoreboard: null,
             score: 0,
+            timeStamp:0,
+            prevTimeStamp: 0,
         };
 
         const scoreboard = new Scoreboard(0,60);
@@ -43,7 +45,7 @@ class DemoScene extends Scene {
         const player1 = new Player1(this);
         // const flower = new Flower(this);
         const lights = new BasicLights();
-        this.add(ground, player1, lights);
+        this.add(player1, ground, lights);
 
         // initialize grid
         this.initGrid();
@@ -158,9 +160,9 @@ class DemoScene extends Scene {
             //     obj.update(event, this.state);
             // }
         }
-        for (const obj of updateList) {
-            obj.update(this);
-        }
+        // for (const obj of updateList) {
+        //     obj.update(this);
+        // }
     }
 
     updateKeyUp(event) {
@@ -187,9 +189,9 @@ class DemoScene extends Scene {
             //     obj.update(event, this.state);
             // }
         }
-        for (const obj of updateList) {
-            obj.update(this);
-        }    
+        // for (const obj of updateList) {
+        //     obj.update(this);
+        // }    
     }
 
     updateTime() {
@@ -211,15 +213,28 @@ class DemoScene extends Scene {
     //     //     obj.update(event);
     //     // }
     // }
-    // update(timeStamp) {
-    //     // const { rotationSpeed, updateList } = this.state;
-    //     // this.rotation.y = (rotationSpeed * timeStamp) / 10000;
+    update(timeStamp) {
+        // console.log("called");
+        if (this.state.prevTimeStamp != this.state.timeStamp) {
+            this.state.prevTimeStamp = this.state.timeStamp;
+            this.state.timeStamp = timeStamp;
+            for (const obj of this.state.updateList) {
+                obj.update(this);
+            }
+        }
+        else {
+            this.state.timeStamp = timeStamp;
+        }
+        
+        // console.log(this.state.timeStamp)
+        // const { rotationSpeed, updateList } = this.state;
+        // this.rotation.y = (rotationSpeed * timeStamp) / 10000;
 
-    //     // // Call update for each object in the updateList
-    //     // for (const obj of updateList) {
-    //     //     obj.update(timeStamp);
-    //     // }
-    // }
+        // // Call update for each object in the updateList
+        // for (const obj of updateList) {
+        //     obj.update(timeStamp);
+        // }
+    }
 
 }
 

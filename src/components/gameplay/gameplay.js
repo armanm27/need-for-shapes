@@ -15,9 +15,12 @@ class Gameplay {
         const camera = new PerspectiveCamera();
         const renderer = new WebGLRenderer({ antialias: true });
 
+        console.log(scene);
+        // let pos = new Vector3(scene.state.player1Position.x, scene.state.player1Position.y + 3, scene.state.player1Position.z - 10);
         // Set up camera
-        camera.position.set(6, 3, -10);
-        camera.lookAt(new Vector3(0, 0, 0));
+        camera.position.set(0, 3, -10);
+        camera.lookAt(0,0,0);
+        // camera.lookAt(scene.state.player1Position);
 
         // Set up renderer, canvas, and minor CSS adjustments
         renderer.setPixelRatio(window.devicePixelRatio);

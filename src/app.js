@@ -11,8 +11,8 @@
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 // import { DemoScene } from 'scenes';
 import { Gameplay } from './components/gameplay';
- 
- var theme = '#ff8f00';
+
+var theme = '#ff8f00';
 
 // set background color
 document.body.style.background = theme;
