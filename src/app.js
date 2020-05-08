@@ -78,15 +78,91 @@ document.getElementById('container').append(start);
 // onclick function
 function clicked() {
 
+    var title = document.getElementById('title');
+    var des = document.getElementById('description');
+    var start = document.getElementById('start');
+    
     document.body.removeChild(title);
     document.body.removeChild(des);
     var contain = document.getElementById('container');
     contain.removeChild(start);
-    document.body.removeChild(container);
-
-
+    document.body.removeChild(contain);
 
     var newGame = new Gameplay(); 
     newGame.run();
 
+    var running = null;
+    function timeLeft() {
+        var time = newGame.scene.state.scoreboard.getTime();
+        if (time == 0) {
+            newGame.kill();
+            // window.cancelAnimationFrame(newGame.requestId);
+            clearInterval(running);
+            var finalscore = newGame.scene.state.scoreboard.getScore();
+            gameOver(finalscore);
+        }
+    }
+
+    running = setInterval(timeLeft, 1000);
+
 }
+
+
+function gameOver(finalscore) {
+
+    // Game over page
+    var title = document.createElement('div');
+    title.id = 'title';
+    title.innerText = 'Game Over!';
+    title.style.color = 'white';
+    title.style.fontFamily = "'Raleway', sans-serif";
+    title.style.fontSize = '62px';
+    title.style.fontWeight = '800';
+    title.style.lineHeight = '200px';
+    title.style.margin = '0 0 24px';
+    title.style.textAlign = 'center';
+    title.style.textTransform = 'uppercase';
+    document.body.append(title);
+
+    // Finalscore and restart message
+    var gameDescription = "You final score: " + finalscore + "     Press Restart to Play Again!";
+
+    var des = document.createElement('div');
+    des.id = 'description';
+    des.innerText = gameDescription;
+    des.style.color = 'white';
+    des.style.textAlign = 'center';
+    des.style.lineHeight = '36px';
+    des.style.fontFamily = "'Raleway', sans-serif";
+    des.style.fontSize = '20px';
+    document.body.append(des);
+
+    // Restart button
+    //container for button
+    var container = document.createElement('div');
+    container.id = 'container';
+    // container.style.background = 'black';
+    container.style.textAlign = 'center';
+    container.style.lineHeight = '200px';
+    container.style.height = '100px';
+
+    document.body.append(container);
+
+    // Start, begin, whatever you want to call it button
+    var start = document.createElement('BUTTON');
+    start.id = 'start';
+    start.innerHTML = "Restart";
+    start.style.fontFamily = "'Raleway', sans.serif";
+    start.style.fontSize = '10px';
+    start.style.background = theme;
+    start.style.color = 'white';
+    start.style.width = '50%';
+    start.style.height = '50px';
+    start.onclick = function() {clicked()};
+    start.onmouseover = function() {start.style.background = 'black'};
+    start.onmouseleave = function() {start.style.background = theme};
+    document.getElementById('container').append(start);
+
+}
+
+
