@@ -30,14 +30,16 @@ class Scoreboard {
 
         var newTime = this.getTime() - 1;
         
-        if (newTime == 0) {
+        // if (newTime == 0) {
 
-            var finalMessage = "You Ran Out of Time! Your final score: " + this.getScore();
-            window.alert(finalMessage);
-        }
+        //     var finalMessage = "You Ran Out of Time! Your final score: " + this.getScore();
+        //     window.alert(finalMessage);
+        // }
 
         this.element.innerText = "SCORE: " + this.getScore() + "   Time Left: " + newTime;
         this.time = newTime;
+
+        return newTime;
     }
 
     getTime() {
