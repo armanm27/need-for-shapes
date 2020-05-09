@@ -22,7 +22,7 @@ class Gameplay {
         // Set up camera
         camera.position.set(0, 3, -10);
         camera.lookAt(0,0,0);
-        // camera.lookAt(scene.state.player1Position);
+        // camera.lookAt(this.scene.state.player1Position);
 
         // Set up renderer, canvas, and minor CSS adjustments
         renderer.setPixelRatio(window.devicePixelRatio);

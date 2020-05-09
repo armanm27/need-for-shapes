@@ -1,7 +1,8 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, Vector3 } from 'three';
-import { Ground, Player1, Target, Scoreboard } from 'objects';
+import { Ground, Player1, Target, Scoreboard, Police } from 'objects';
 import { BasicLights } from 'lights';
+import Coin from '../objects/Coin/Coin';
 
 
 class DemoScene extends Scene {
@@ -21,8 +22,10 @@ class DemoScene extends Scene {
             rightArrowPushed: false,
             player1Position: new Vector3(0,0,0),
             activeTargets: [],
-            fieldSize: 150,
+            activeEnemies: [],
+            fieldSize: 50,
             numTargets: 50,
+            numEnemies: 10,
             targetSize: 3,
             grid: [],
             scoreboard: null,
@@ -43,15 +46,19 @@ class DemoScene extends Scene {
         // const land = new Land();
         const ground = new Ground();
         const player1 = new Player1(this);
-        // const flower = new Flower(this);
+        // const police = new Police(this, 2, 0, 10);
         const lights = new BasicLights();
+        // const coin = new Coin(this, 2, 0, 2);
         this.add(player1, ground, lights);
+        // this.add(player1, ground, lights);
 
         // initialize grid
         this.initGrid();
         
         // Populate playing field with targets
         this.populateTargets();
+        // Populate enemies
+        this.populateEnemies();
     }
     // helper function to initialize grid to false at beginning of round
     initGrid() {
@@ -101,6 +108,28 @@ class DemoScene extends Scene {
 
 
     // populate targets using semi-random sampling
+    // populateTargets() {
+    //     var min = -1 * this.state.fieldSize / 2;
+    //     var max = this.state.fieldSize / 2;
+    //     for (let i = 0; i < this.state.numTargets; i++) {
+    //         let x = (Math.random() * (max - min)) + min;
+    //         let z = (Math.random() * (max - min)) + min;
+    //         // console.log(x);
+    //         // console.log(z);
+    //         // check if danger close to any grid spaces that are already taken up
+    //         let coords = this.spotFromCoord(x,z);
+    //         while (this.state.grid[this.index(coords[0], coords[1])]) {
+    //             x = (Math.random() * (max - min)) + min;
+    //             z = (Math.random() * (max - min)) + min;
+    //             coords = this.spotFromCoord(x,z);
+    //         }
+    //         const target = new Target(this, x, 0, z);
+    //         this.updateGrid(coords[0], coords[1]);
+    //         this.add(target);
+    //         this.state.activeTargets.push(target);
+    //     }
+    // }
+
     populateTargets() {
         var min = -1 * this.state.fieldSize / 2;
         var max = this.state.fieldSize / 2;
@@ -116,12 +145,27 @@ class DemoScene extends Scene {
                 z = (Math.random() * (max - min)) + min;
                 coords = this.spotFromCoord(x,z);
             }
-            const target = new Target(this, x, 0, z);
+            const coin = new Coin(this, x, 0, z);
             this.updateGrid(coords[0], coords[1]);
-            this.add(target);
-            this.state.activeTargets.push(target);
+            this.add(coin);
+            this.state.activeTargets.push(coin);
         }
     }
+
+    populateEnemies() {
+        let num = this.state.numEnemies;
+        var min = -1 * this.state.fieldSize / 2;
+        var max = this.state.fieldSize / 2;
+        for (let i = 0; i < num; i++) {
+            let x = (Math.random() * (max - min)) + min;
+            let z = (Math.random() * (max - min)) + min;
+            
+            const enemy = new Police(this, x, 0, z);
+            this.add(enemy);
+            this.state.activeEnemies.push(enemy);
+        }
+    }
+
     // update targets after collision detected
     updateSceneAfterHit(hitTarget, index) {
         this.state.activeTargets.splice(index, 1);
@@ -218,14 +262,16 @@ class DemoScene extends Scene {
         if (this.state.prevTimeStamp != this.state.timeStamp) {
             this.state.prevTimeStamp = this.state.timeStamp;
             this.state.timeStamp = timeStamp;
-            for (const obj of this.state.updateList) {
-                obj.update(this);
-            }
         }
         else {
             this.state.timeStamp = timeStamp;
         }
-        
+        // console.log(this.state.timeStamp);
+        if (this.state.timeStamp > 3000) {
+            for (const obj of this.state.updateList) {
+                obj.update(this);
+            }
+        }
         // console.log(this.state.timeStamp)
         // const { rotationSpeed, updateList } = this.state;
         // this.rotation.y = (rotationSpeed * timeStamp) / 10000;

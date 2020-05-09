@@ -208,7 +208,7 @@ class Player1 extends Group {
         //     z = -1 * tv;
         // }
         // this.state.velocity.set(x,0,z);
-        console.log(this.state.velocity);
+        // console.log(this.state.velocity);
         // reset acceleration
         this.state.acceleration.set(0,0,0);
     }
@@ -232,19 +232,32 @@ class Player1 extends Group {
         var sphere = this.getSphere().geometry.boundingSphere;
         var targets = parent.state.activeTargets;
         for (let i = 0; i < targets.length; i++) {
+            // if (sphere.intersectsSphere(this.getTargetSphere(targets[i]))) {
+            //     console.log("hit");
+            //     parent.updateSceneAfterHit(targets[i], i);
+            // }
             if (sphere.intersectsBox(this.getBox(targets[i]))) {
-                // console.log("hit");
+                console.log("hit");
                 parent.updateSceneAfterHit(targets[i], i);
             }
         }
+        // return;
     }
     // helper function to get sphere object
     getSphere() {
         return this.children[0];
     }
+    getTargetSphere(target) {
+        return target.children[0].children[0].geometry.boundingSphere;
+    }
     // helper function to get the bounding box of a target
     getBox(target) {
-        return target.children[0].geometry.boundingBox;
+        // debugger;
+        // console.log(target);
+        // console.log(target.children[0]);
+        // console.log(target.children[0].children[0]);
+        // return null;
+        return target.children[0].children[0].geometry.boundingBox;
     }
 
 }
