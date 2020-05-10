@@ -13,15 +13,15 @@ class Gameplay {
 
         // Initialize core ThreeJS components
         const scene = new DemoScene();
-        const camera = new PerspectiveCamera();
+        const camera = scene.state.camera;
         const renderer = new WebGLRenderer({ antialias: true });
         this.scene = scene;
 
         console.log(scene);
         // let pos = new Vector3(scene.state.player1Position.x, scene.state.player1Position.y + 3, scene.state.player1Position.z - 10);
         // Set up camera
-        camera.position.set(0, 3, -10);
-        camera.lookAt(0,0,0);
+        // camera.position.set(0, 3, -10);
+        // camera.lookAt(0,0,0);
         // camera.lookAt(this.scene.state.player1Position);
 
         // Set up renderer, canvas, and minor CSS adjustments
@@ -34,12 +34,12 @@ class Gameplay {
         document.body.appendChild(canvas);
 
         // Set up controls
-        const controls = new OrbitControls(camera, canvas);
-        controls.enableDamping = true;
-        controls.enablePan = false;
-        controls.minDistance = 4;
-        controls.maxDistance = 16;
-        controls.update();
+        // const controls = new OrbitControls(camera, canvas);
+        // controls.enableDamping = true;
+        // controls.enablePan = false;
+        // controls.minDistance = 4;
+        // controls.maxDistance = 16;
+        // controls.update();
 
        var timing = null;
        function timer() {
@@ -70,7 +70,7 @@ class Gameplay {
 
         // Render loop
         const onAnimationFrameHandler = (timeStamp) => {
-            controls.update();
+            // controls.update();
             renderer.render(scene, camera);
             scene.update && scene.update(timeStamp);
             window.requestAnimationFrame(onAnimationFrameHandler);
@@ -102,6 +102,7 @@ class Gameplay {
 
     kill() {
         window.cancelAnimationFrame(this.requestId);
+        this.scene.dispose();
         var score = document.getElementById('scoreboard');
         var field = document.getElementById('field');
         document.body.removeChild(score);
