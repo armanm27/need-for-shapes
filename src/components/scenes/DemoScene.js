@@ -34,7 +34,8 @@ class DemoScene extends Scene {
             prevTimeStamp: 0.0,
             frozen: false,
             frozenStart: 0,
-            frozenPenalty: 5000
+            frozenPenalty: 5000,
+            camera: null,
         };
 
         const scoreboard = new Scoreboard(0,60);
@@ -49,6 +50,7 @@ class DemoScene extends Scene {
         // const land = new Land();
         const ground = new Ground();
         const player1 = new Player1(this);
+        this.state.camera = player1.state.camera;
         // const police = new Police(this, 2, 0, 10);
         const lights = new BasicLights();
         // const coin = new Coin(this, 2, 0, 2);
