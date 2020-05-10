@@ -52,6 +52,7 @@ class Police extends Group {
         let mesh = this.getMeshFromGLTF(gltf);
         // console.log(mesh);
         mesh.position.set(x,y,z);
+        mesh.geometry.scale(2.0, 2.0, 2.0);
         mesh.geometry.computeBoundingBox();
         this.state.boundingBox.setFromObject(mesh);
 
