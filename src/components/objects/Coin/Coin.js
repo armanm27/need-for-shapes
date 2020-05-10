@@ -53,8 +53,8 @@ class Coin extends Group {
         
         
         mesh.geometry.rotateX(-Math.PI / 2);
-        mesh.geometry.scale(6,6,6);
-        mesh.position.set(x,y,z);
+        mesh.geometry.scale(12,12,12);
+        mesh.position.set(x,y+1,z);
         // mesh.geometry.translate(x,y,z);
 
         mesh.geometry.computeBoundingBox();
