@@ -1,4 +1,4 @@
-import { Group, Vector3 } from 'three';
+import { Group, Vector3, Box3, BoxHelper } from 'three';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -10,6 +10,10 @@ class Police extends Group {
         // Call parent Group() constructor
         super();
 
+        this.state = {
+            boundingBox: new Box3(),
+        }
+
         this.name = 'police';
 
         const loader = new GLTFLoader();
@@ -20,41 +24,36 @@ class Police extends Group {
             // gltf.scene.translateY(y);
             // gltf.scene.translateZ(z);
             this.setPos(gltf, x ,y ,z);
-            this.updateBoundingBox(gltf.scene.children[0].children[0].children[0].children[0].geometry, new Vector3(x,y,z));
+            // console.log(this.getMeshFromGLTF(gltf));
+            // this.updateBoundingBox(gltf.scene.children[0].children[0].children[0].children[0].geometry, new Vector3(x,y,z));
             // console.log(gltf);
             // this.position.set(x,y,z);
             // this.setPos(gltf, x, y, z);
             // console.log(this.getMesh());
+            
+            // let box = new BoxHelper();
+            // box.setFromObject(this.getMeshFromGLTF(gltf));
             this.add(gltf.scene);
+            // this.add(gltf.scene, box);
         });
 
-        // Load material and object
-        // const objloader = new OBJLoader();
-        // const mtlLoader = new MTLLoader();
-        // objloader.setMaterials(mtlLoader.parse(MATERIAL)).load(MODEL, (obj) => {
-        //     // Set base transformation
-        //     obj.scale.multiplyScalar(0.0075);
-        //     obj.translateX(1.5);
-        //     obj.translateY(0.065);
-        //     obj.rotateZ(0.5);
-        //     obj.rotateY(Math.PI);
-        //     obj.matrixAutoUpdate = false;
-        //     obj.updateMatrix();
-
-        //     this.add(obj);
-        // });
 
         parent.addToUpdateList(this);
     }
 
     // set the position of the gltf scene & mesh
     setPos(gltf, x, y, z) {
-        let newPos = new Vector3(x,y,z);
-        gltf.scene.translateX(x);
-        gltf.scene.translateY(y);
-        gltf.scene.translateZ(z);
+        // let newPos = new Vector3(x,y,z);
+        // gltf.scene.translateX(x);
+        // gltf.scene.translateY(y);
+        // gltf.scene.translateZ(z);
         // console.log(gltf.scene.children[0].children[0].children[0].children[0]);
-        this.updateBoundingBox(gltf.scene.children[0].children[0].children[0].children[0].geometry, newPos);
+        // this.updateBoundingBox(gltf.scene.children[0].children[0].children[0].children[0].geometry, newPos);
+        let mesh = this.getMeshFromGLTF(gltf);
+        // console.log(mesh);
+        mesh.position.set(x,y,z);
+        mesh.geometry.computeBoundingBox();
+        this.state.boundingBox.setFromObject(mesh);
 
         // set this position
         // this.position.set(newPos);
@@ -71,6 +70,10 @@ class Police extends Group {
         // // geometry.computeBoundingBox();
         // this.updateBoundingBox(geometry, newPos);
         // console.log(mesh);
+    }
+    // access the mesh from a gltf
+    getMeshFromGLTF(gltf) {
+        return gltf.scene.children[0].children[0].children[0].children[0];
     }
 
     // set the bounding box of the mesh to the current position

@@ -1,4 +1,4 @@
-import { Group, Vector3 } from 'three';
+import { Group, Vector3, BoxHelper, Box3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import MODEL from './CHAHIN_COIN.glb';
@@ -10,6 +10,7 @@ class Coin extends Group {
 
         // Init state
         this.state = {
+            boundingBox: new Box3(),
             // gui: parent.state.gui,
             // bob: true,
             // spin: this.spin.bind(this),
@@ -25,9 +26,15 @@ class Coin extends Group {
             // let newPos = new Vector3(x, y, z);
             this.translateAndRotate(gltf, x, y, z);
             
+            // let bounding = new BoxHelper();
+            // // console.log(gltf.scene.children[0]);
+            // bounding.setFromObject(gltf.scene.children[0]);
+            this.state.boundingBox.setFromObject(gltf.scene.children[0]);
             // console.log(gltf.scene.children[0]);
+            // this.add(gltf.scene, bounding);
             this.add(gltf.scene);
         });
+
 
         // Add self to parent's update list
         parent.addToUpdateList(this);
@@ -39,19 +46,20 @@ class Coin extends Group {
 
     translateAndRotate(gltf, x, y, z) {
         // gltf.scene.translate(newPos);
-        gltf.scene.translateX(x);
-        gltf.scene.translateY(y);
-        gltf.scene.translateZ(z);
+        // gltf.scene.translateX(x);
+        // gltf.scene.translateY(y);
+        // gltf.scene.translateZ(z);
         let mesh = gltf.scene.children[0];
         
         
         mesh.geometry.rotateX(-Math.PI / 2);
         mesh.geometry.scale(6,6,6);
         mesh.position.set(x,y,z);
-        mesh.geometry.translate(x,y,z);
+        // mesh.geometry.translate(x,y,z);
 
         mesh.geometry.computeBoundingBox();
-        mesh.geometry.computeBoundingSphere();
+        // mesh.geometry.boundingBox.setFromObject(mesh);
+        // mesh.geometry.computeBoundingSphere();
         // console.log(mesh);
     }
 

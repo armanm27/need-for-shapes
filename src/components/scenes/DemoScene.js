@@ -23,15 +23,18 @@ class DemoScene extends Scene {
             player1Position: new Vector3(0,0,0),
             activeTargets: [],
             activeEnemies: [],
-            fieldSize: 50,
+            fieldSize: 250,
             numTargets: 50,
-            numEnemies: 10,
+            numEnemies: 25,
             targetSize: 3,
             grid: [],
             scoreboard: null,
             score: 0,
             timeStamp:0.0,
             prevTimeStamp: 0.0,
+            frozen: false,
+            frozenStart: 0,
+            frozenPenalty: 5000
         };
 
         const scoreboard = new Scoreboard(0,60);
@@ -176,6 +179,16 @@ class DemoScene extends Scene {
         // console.log(this.state.activeTargets);
         // console.log(this.state.numTargets);
     }
+    // update scene after collision with enemy
+    // remove enemy, set state to frozen, set frozenStart to timeStamp
+    updateSceneAfterEnemyHit(hitEnemy, index) {
+        this.state.activeEnemies.splice(index, 1);
+        // probably need better disposal
+        this.remove(hitEnemy);
+        this.state.frozen = true;
+        this.state.frozenStart = this.state.timeStamp;
+    }
+
 
     addToUpdateList(object) {
         this.state.updateList.push(object);
@@ -266,6 +279,16 @@ class DemoScene extends Scene {
         else {
             this.state.timeStamp = timeStamp;
         }
+        // check if frozen
+        if (this.state.frozen == true) {
+            let frozenEnd = this.state.frozenStart + this.state.frozenPenalty;
+            if (timeStamp < frozenEnd) {
+                return;
+            }
+            this.state.frozen = false;
+            this.state.frozenStart = 0;
+        }
+
         // console.log(this.state.timeStamp);
         if (this.state.timeStamp > 3000) {
             for (const obj of this.state.updateList) {

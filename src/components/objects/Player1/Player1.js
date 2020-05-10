@@ -1,4 +1,4 @@
-import { Group, SphereGeometry, Mesh, MeshPhongMaterial, DoubleSide, Vector3 } from 'three';
+import { Group, BoxHelper, SphereGeometry, Mesh, MeshPhongMaterial, DoubleSide, Vector3, Box3Helper, Box3 } from 'three';
 
 
 class Player1 extends Group {
@@ -43,16 +43,19 @@ class Player1 extends Group {
               
         let pos = parent.state.player1Position.clone();
         // let pos = this.state.position;
-        this.position.copy(pos);
+        // this.position.copy(pos);
         sphere.mesh.position.copy(pos);
-        sphere.position = pos.clone();
-        sphere.prevPosition = pos.clone();
+        // sphere.position = pos.clone();
+        // sphere.prevPosition = pos.clone();
+        sphere.mesh.geometry.computeBoundingBox();
         sphere.mesh.geometry.computeBoundingSphere();
-        sphere.mesh.geometry.boundingSphere.translate(this.state.startingPos);
+        // sphere.mesh.geometry.boundingSphere.translate(this.state.startingPos);
         // console.log(this);
       
-        this.add(sphere.mesh); // add sphere to scene
-
+        // let bounding = new BoxHelper();
+        // bounding.setFromObject(sphere.mesh);
+        // this.add(sphere.mesh, bounding); // add sphere to scene
+        this.add(sphere.mesh);
         // Add self to parent's update list
         parent.addToUpdateList(this);
     }
@@ -108,12 +111,16 @@ class Player1 extends Group {
             //     this.state.velocity.add(keyMap.ArrowRight);
             // }
         // this.position.add(this.state.velocity);
-        this.getSphere().position.copy(this.position);
-        parent.state.player1Position.copy(this.position);
-        this.targetDetection(parent);
-        let t = parent.state.timeStamp - parent.state.prevTimeStamp;
-        let translationVec = this.state.velocity.clone().multiplyScalar(t);
-        this.getSphere().geometry.boundingSphere.translate(translationVec);
+        // this.getSphere().position.copy(this.position);
+        // this.children[0].po
+        parent.state.player1Position.copy(this.getSphere().position);
+        var box = new Box3();
+        box.setFromObject(this.getSphere());
+        this.targetDetection(parent, box);
+        this.enemyDetection(parent, box);
+        // let t = parent.state.timeStamp - parent.state.prevTimeStamp;
+        // let translationVec = this.state.velocity.clone().multiplyScalar(t);
+        // this.getSphere().geometry.boundingSphere.translate(translationVec);
     }
     
     // update the acceleration state
@@ -175,7 +182,7 @@ class Player1 extends Group {
         this.state.velocity.addScaledVector(a, t);
         // apply friction if necessary
         let eps = 0.05;
-        if (!(this.state.velocity.length() < eps)) {
+        if (this.state.velocity.length() > eps) {
             // let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
             let frictionForce = a.length();
             let frictionDirection = this.state.velocity.clone().normalize();
@@ -216,11 +223,20 @@ class Player1 extends Group {
     // update position based on velocity
     updatePosition(parent) {
         let t = parent.state.timeStamp - parent.state.prevTimeStamp;
-        this.position.addScaledVector(this.state.velocity, t);
-
+        this.children[0].position.addScaledVector(this.state.velocity, t);
+        // this.position.addScaledVector(this.state.velocity, t);
     }
 
-
+    // Enemy Detection
+    enemyDetection(parent, box) {
+        var enemies = parent.state.activeEnemies;
+        for (let i = 0; i < enemies.length; i++) {
+            if (box.intersectsBox(this.getBox(enemies[i]))) {
+                console.log("enemy hit");
+                parent.updateSceneAfterEnemyHit(enemies[i], i);
+            }
+        }
+    }
 
 
 
@@ -228,21 +244,26 @@ class Player1 extends Group {
 
 
     // check if player1 collided with any active targets
-    targetDetection(parent) {
-        var sphere = this.getSphere().geometry.boundingSphere;
+    targetDetection(parent, box) {
+        // var sphere = this.getSphere().geometry.boundingSphere;
+        // this.children[1].update();
         var targets = parent.state.activeTargets;
         for (let i = 0; i < targets.length; i++) {
             // if (sphere.intersectsSphere(this.getTargetSphere(targets[i]))) {
             //     console.log("hit");
             //     parent.updateSceneAfterHit(targets[i], i);
             // }
-            if (sphere.intersectsBox(this.getBox(targets[i]))) {
+            // debugger;
+            if (box.intersectsBox(this.getBox(targets[i]))) {
                 console.log("hit");
                 parent.updateSceneAfterHit(targets[i], i);
             }
         }
         // return;
     }
+
+
+
     // helper function to get sphere object
     getSphere() {
         return this.children[0];
@@ -257,8 +278,14 @@ class Player1 extends Group {
         // console.log(target.children[0]);
         // console.log(target.children[0].children[0]);
         // return null;
-        return target.children[0].children[0].geometry.boundingBox;
+        // console.log(target.state.boundingBox);
+        return target.state.boundingBox;
+        // return target.children[0].children[0].geometry.boundingBox;
     }
+    // helper to get the mesh
+    // getMesh() {
+
+    // }
 
 }
 
