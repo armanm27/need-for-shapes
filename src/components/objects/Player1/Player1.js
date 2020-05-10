@@ -1,4 +1,4 @@
-import { Group, BoxHelper, SphereGeometry, Mesh, MeshPhongMaterial, DoubleSide, Vector3, Box3Helper, Box3 } from 'three';
+import { Group, BoxHelper, SphereGeometry, Mesh, MeshPhongMaterial, DoubleSide, Vector3, Box3Helper, Box3, PerspectiveCamera } from 'three';
 
 
 class Player1 extends Group {
@@ -21,12 +21,13 @@ class Player1 extends Group {
             terminalVelocity: 0.015,
             mass: 50,
             standardForce: 0.0001,
-            frictionFactor: 0.3
+            frictionFactor: 0.3, 
+            camera: null,
         };
         this.name = 'player1';
 
         let sphere = {};
-        sphere.radius = 1;
+        sphere.radius = 2;
         sphere.geometry = new SphereGeometry(sphere.radius, 20, 20);
         // sphere material
         sphere.material = new MeshPhongMaterial({
@@ -52,9 +53,20 @@ class Player1 extends Group {
         // sphere.mesh.geometry.boundingSphere.translate(this.state.startingPos);
         // console.log(this);
       
+        // create camera 
+
+        var camera = new PerspectiveCamera();
+        camera.position.set(0, 50, -60);
+        camera.lookAt(sphere.mesh.position);
+        sphere.mesh.add(camera);
+        this.state.camera = camera;
+
         // let bounding = new BoxHelper();
         // bounding.setFromObject(sphere.mesh);
-        // this.add(sphere.mesh, bounding); // add sphere to scene
+        // this.add(sphere.mesh, bounding); 
+        
+        // add sphere to scene
+        sphere.mesh.frustumCulled = false;
         this.add(sphere.mesh);
         // Add self to parent's update list
         parent.addToUpdateList(this);
@@ -127,10 +139,10 @@ class Player1 extends Group {
     updateAcceleration(parent) {
         // const ACC_DUE_TO_GRAVITY = 
         const keyMap = {
-            ArrowUp: new Vector3(0,  0,  1),
-            ArrowDown: new Vector3(0,  0,  -1),
-            ArrowLeft: new Vector3(1,  0,  0),
-            ArrowRight: new Vector3(-1,  0,  0),
+            ArrowUp: new Vector3(0,  0,  2),
+            ArrowDown: new Vector3(0,  0,  -2),
+            ArrowLeft: new Vector3(2,  0,  0),
+            ArrowRight: new Vector3(-2,  0,  0),
         };
         let standardForce = this.state.standardForce;
         let totalForce = new Vector3();
