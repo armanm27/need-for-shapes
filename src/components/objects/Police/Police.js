@@ -53,6 +53,7 @@ class Police extends Group {
         // console.log(mesh);
         mesh.position.set(x,y,z);
         mesh.geometry.scale(2.0, 2.0, 2.0);
+        mesh.geometry.rotateY(Math.random() * Math.PI);
         mesh.geometry.computeBoundingBox();
         this.state.boundingBox.setFromObject(mesh);
 

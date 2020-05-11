@@ -193,10 +193,10 @@ class Player1 extends Group {
         let v0 = this.state.velocity.clone();
         this.state.velocity.addScaledVector(a, t);
         // apply friction if necessary
-        let eps = 0.05;
-        if (this.state.velocity.length() > eps) {
+        // let eps = 0.05;
+        // if (this.state.velocity.length() > eps) {
             // let frictionForce = this.state.mass * 9.8 * this.state.frictionCoeff;
-            let frictionForce = a.length();
+            let frictionForce = this.state.velocity.length();
             let frictionDirection = this.state.velocity.clone().normalize();
             frictionDirection.x = -1 * frictionDirection.x;
             frictionDirection.y = -1 * frictionDirection.y;
@@ -205,7 +205,7 @@ class Player1 extends Group {
             frictionDirection.divideScalar(this.state.mass);
             // this.state.acceleration.add(frictionDirection);
             this.state.velocity.add(frictionDirection);
-        }
+        // }
         // check terminal velocity
         if (this.state.velocity.length() > this.state.terminalVelocity) {
             this.state.velocity.normalize();

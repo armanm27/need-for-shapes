@@ -1,6 +1,6 @@
 import { Group, Vector3, BoxHelper, Box3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
+// import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import MODEL from './CHAHIN_COIN.glb';
 
 class Coin extends Group {
@@ -51,7 +51,7 @@ class Coin extends Group {
         // gltf.scene.translateZ(z);
         let mesh = gltf.scene.children[0];
         
-        
+        mesh.geometry.rotateY(Math.random() * Math.PI);
         mesh.geometry.rotateX(-Math.PI / 2);
         mesh.geometry.scale(12,12,12);
         mesh.position.set(x,y+1,z);
