@@ -88,12 +88,14 @@ class Police extends Group {
 
     // access the mesh from this
     getMesh() {
-        console.log(this);
+        // console.log(this);
         let c0 = this.children[0];
-        console.log(c0);
+        // console.log(c0);
         let c1 = c0.children[0];
         let c2 = c1.children[0];
-        console.log(c2);
+        let mesh = c2.children[0].children[0];
+        return mesh;
+        // console.log(c2);
     }
 
     update() {

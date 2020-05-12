@@ -174,6 +174,10 @@ class DemoScene extends Scene {
     // update targets after collision detected
     updateSceneAfterHit(hitTarget, index) {
         this.state.activeTargets.splice(index, 1);
+        let mesh = hitTarget.getMesh();
+        // console.log(mesh);
+        mesh.geometry.dispose();
+        mesh.material.dispose();
         this.remove(hitTarget);
         this.state.numTargets--;
         this.state.score++;
@@ -186,6 +190,10 @@ class DemoScene extends Scene {
     updateSceneAfterEnemyHit(hitEnemy, index) {
         this.state.activeEnemies.splice(index, 1);
         // probably need better disposal
+        let mesh = hitEnemy.getMesh();
+        // console.log(mesh);
+        mesh.geometry.dispose();
+        mesh.material.dispose();
         this.remove(hitEnemy);
         this.state.frozen = true;
         this.state.frozenStart = this.state.timeStamp;
@@ -258,6 +266,23 @@ class DemoScene extends Scene {
         this.state.scoreboard.updateTime();
     }
     
+    disposeOfObjects() {
+        for (let i = 0; i < this.state.activeTargets.length; i++) {
+            let mesh = this.state.activeTargets[i].getMesh();
+            mesh.geometry.dispose();
+            mesh.material.dispose();
+            // this.remove(hitEnemy);
+        }
+        for (let i = 0; i < this.state.activeEnemies.length; i++) {
+            let mesh = this.state.activeEnemies[i].getMesh();
+            mesh.geometry.dispose();
+            mesh.material.dispose();
+            // this.remove(hitEnemy);
+        }
+        let mesh = this.children[0].getSphere();
+        mesh.geometry.dispose();
+        mesh.material.dispose();
+    }
 
     // update(event) {
     //     if (event.key == "ArrowUp") {

@@ -17,7 +17,7 @@ class Gameplay {
         const renderer = new WebGLRenderer({ antialias: true });
         this.scene = scene;
 
-        console.log(scene);
+        // console.log(scene);
         // let pos = new Vector3(scene.state.player1Position.x, scene.state.player1Position.y + 3, scene.state.player1Position.z - 10);
         // Set up camera
         // camera.position.set(0, 3, -10);
@@ -102,6 +102,8 @@ class Gameplay {
 
     kill() {
         window.cancelAnimationFrame(this.requestId);
+
+        this.scene.disposeOfObjects();
         this.scene.dispose();
         var score = document.getElementById('scoreboard');
         var field = document.getElementById('field');

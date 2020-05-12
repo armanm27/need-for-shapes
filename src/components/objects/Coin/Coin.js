@@ -63,6 +63,10 @@ class Coin extends Group {
         // console.log(mesh);
     }
 
+    getMesh(){
+        return this.children[0].children[0];
+    }
+
     // spin() {
     //     // Add a simple twirl
     //     this.state.twirl += 6 * Math.PI;

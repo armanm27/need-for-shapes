@@ -18,9 +18,9 @@ class Player1 extends Group {
             acceleration: new Vector3(0,0,0),
             startingPos: new Vector3(0,0,0),
             velocity: new Vector3(0,0,0),
-            terminalVelocity: 0.015,
+            terminalVelocity: 0.25,
             mass: 50,
-            standardForce: 0.0001,
+            standardForce: 0.00015,
             frictionFactor: 0.3, 
             camera: null,
         };
@@ -244,7 +244,7 @@ class Player1 extends Group {
         var enemies = parent.state.activeEnemies;
         for (let i = 0; i < enemies.length; i++) {
             if (box.intersectsBox(this.getBox(enemies[i]))) {
-                console.log("enemy hit");
+                // console.log("enemy hit");
                 parent.updateSceneAfterEnemyHit(enemies[i], i);
             }
         }
@@ -267,7 +267,7 @@ class Player1 extends Group {
             // }
             // debugger;
             if (box.intersectsBox(this.getBox(targets[i]))) {
-                console.log("hit");
+                // console.log("hit");
                 parent.updateSceneAfterHit(targets[i], i);
             }
         }
