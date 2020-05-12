@@ -18,9 +18,10 @@ class Player1 extends Group {
             acceleration: new Vector3(0,0,0),
             startingPos: new Vector3(0,0,0),
             velocity: new Vector3(0,0,0),
-            terminalVelocity: 0.25,
+            terminalVelocity: 0.2,
             mass: 50,
-            standardForce: 0.00015,
+            // standardForce: 0.00015,
+            standardForce: 0.0015,
             frictionFactor: 0.3, 
             camera: null,
         };
@@ -179,10 +180,11 @@ class Player1 extends Group {
         //     // this.state.acceleration.add(frictionDirection);
         //     // this.state.velocity.copy(v0.addScaledVector(a,t));
         // }
-        let time = parent.state.timeStamp - parent.state.prevTimeStamp;
-        let fPerFrame = totalForce.multiplyScalar(time);
-        // this.state.acceleration.add(fPerFrame.divideScalar(this.state.mass));
-        this.state.acceleration.copy(fPerFrame.divideScalar(this.state.mass));
+        // let time = parent.state.timeStamp - parent.state.prevTimeStamp;
+        // let fPerFrame = totalForce.multiplyScalar(time);
+        // // this.state.acceleration.add(fPerFrame.divideScalar(this.state.mass));
+        // this.state.acceleration.copy(fPerFrame.divideScalar(this.state.mass));
+        this.state.acceleration.copy(totalForce.divideScalar(this.state.mass));
     }
 
     // update velocity based on Acceleration

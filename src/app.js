@@ -21,7 +21,7 @@ document.body.style.background = theme;
 // Title 
 var title = document.createElement('div');
 title.id = 'title';
-title.innerText = 'NEED for SHAPES';
+title.innerText = 'CRASH FOR CASH';
 title.style.color = 'white';
 title.style.fontFamily = "'Raleway', sans-serif";
 title.style.fontSize = '62px';
@@ -35,8 +35,8 @@ document.body.append(title);
 
 // Description of game 
 
-var gameDescription = "Use the arrow keys to move your chracter and collect as many targets as you can under 60 seconds. But watch out! If you hit a"  +
-"enemy zipping by, you will freeze and lose precious time. Think you can take on the " +
+var gameDescription = "Use the arrow keys to move your chracter and collect as many coins as you can under 60 seconds. But watch out! If you get pulled over "  +
+"by the cops, you will freeze for 5 seconds and lose precious time. Think you can take on the " +
 "challenge? Press start to begin!"
 
 var des = document.createElement('div');
@@ -134,7 +134,7 @@ function gameOver(finalscore, highscore) {
     document.body.append(title);
 
     // Finalscore and restart message
-    var gameDescription = "Your final score: " + finalscore +  "     Current high score:" + highscore + "     Press Restart to Play Again!";
+    var gameDescription = "Your final score: " + finalscore +  "     Current high score: " + highscore + "     Press Restart to Play Again!";
 
     var des = document.createElement('div');
     des.id = 'description';

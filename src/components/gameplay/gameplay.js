@@ -19,6 +19,7 @@ class Gameplay {
         const camera = scene.state.camera;
         const renderer = new WebGLRenderer({ antialias: true });
         this.scene = scene;
+        // console.log(this);
 
         // console.log(scene);
         // let pos = new Vector3(scene.state.player1Position.x, scene.state.player1Position.y + 3, scene.state.player1Position.z - 10);
@@ -27,7 +28,7 @@ class Gameplay {
         // camera.lookAt(0,0,0);
         // camera.lookAt(this.scene.state.player1Position);
 
-        const scoreboard = new Scoreboard(0,10, this.highscore);
+        const scoreboard = new Scoreboard(0,60, this.highscore);
         this.scoreboard = scoreboard;
         scene.state.scoreboard = scoreboard;
 
