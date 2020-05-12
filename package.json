@@ -2,18 +2,14 @@
   "name": "need-for-shapes",
   "repository": "need-for-shapes",
   "version": "0.1.0",
-  "title": "Need For Shapes",
+  "title": "Crash for Cash",
   "description": "Race against the clock in this exilerating shape collection game.",
   "keywords": [
     "Princeton",
     "graphics",
     "three.js",
     "COS 426",
-    "ivy league",
-    "keyword1",
-    "keyword2",
-    "...",
-    "this last entry CANNOT have a comma after it ->"
+    "ivy league"
   ],
   "scripts": {
     "start": "webpack-dev-server --mode development --output-public-path \"\"",

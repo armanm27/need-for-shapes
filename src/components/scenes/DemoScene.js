@@ -314,6 +314,7 @@ class DemoScene extends Scene {
             }
             this.state.frozen = false;
             this.state.frozenStart = 0;
+
         }
 
         // console.log(this.state.timeStamp);

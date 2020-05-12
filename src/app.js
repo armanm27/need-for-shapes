@@ -134,7 +134,7 @@ function gameOver(finalscore, highscore) {
     document.body.append(title);
 
     // Finalscore and restart message
-    var gameDescription = "Your final score: " + finalscore +  "     Current high score: " + highscore + "     Press Restart to Play Again!";
+    var gameDescription = "Your final score: " + finalscore +  "     Current high score: " + highscore + "     Press Restart to Play Again and Beat Your Highscore!";
 
     var des = document.createElement('div');
     des.id = 'description';
