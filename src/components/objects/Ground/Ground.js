@@ -1,4 +1,4 @@
-import { Group, MeshStandardMaterial, Mesh, PlaneBufferGeometry } from 'three';
+import { Group, MeshBasicMaterial, TextureLoader, Mesh, RepeatWrapping, PlaneBufferGeometry, RGBA_ASTC_10x5_Format } from 'three';
 
 
 class Ground extends Group {
@@ -18,10 +18,20 @@ class Ground extends Group {
         ground.textures = {};
 
         // ground material
-        ground.material = new MeshStandardMaterial({
-            color: 0x404761, //0x3c3c3c,
-            // specular: 0x404761, //0x3c3c3c//,
-            metalness: 0.3,
+        // ground.material = new MeshStandardMaterial({
+        //     color: 0x3c3c3c,
+        //     //specular: 0x404761, //0x3c3c3c//,
+        //    // metalness: 0.3,
+        // });
+
+        var texture = new TextureLoader().load("src/components/objects/Ground/textures/preview.jpg");
+
+        texture.wrapS = texture.wrapT = RepeatWrapping;
+        texture.repeat.set(100, 100);
+        //texture.anisotropy = 16;
+    
+        ground.material = new MeshBasicMaterial( {
+            map: texture
         });
 
         // ground mesh

@@ -1,9 +1,9 @@
 class Scoreboard {
 
-    constructor(initialscore, intitialtime) {
+    constructor(initialscore, intitialtime, highscore) {
         this.element = document.createElement("div");
         this.element.id = "scoreboard";
-        this.element.innerText = "SCORE: " + initialscore + "   Time Left: " + intitialtime;
+        this.element.innerText = "SCORE: " + initialscore + "   Time Left: " + intitialtime + "High Score:  "; // + highscore;
         this.element.style.color = 'white';
         this.element.style.background = '0x7ec0ee';
         this.element.style.fontFamily = 'Andale Mono';
@@ -14,11 +14,12 @@ class Scoreboard {
 
         this.score = initialscore;
         this.time = intitialtime;
+        this.highscore = highscore;
     }
 
 
     updateScore(newScore) {
-        this.element.innerText = "SCORE: " + newScore + "   Time Left: " + this.getTime();
+        this.element.innerText = "SCORE: " + newScore + "   Time Left: " + this.getTime() + "      HighScore: " + this.getHighScore();
         this.score = newScore;
     }
 
@@ -36,10 +37,20 @@ class Scoreboard {
         //     window.alert(finalMessage);
         // }
 
-        this.element.innerText = "SCORE: " + this.getScore() + "   Time Left: " + newTime;
+        this.element.innerText = "SCORE: " + this.getScore() + "   Time Left: " + newTime + "      HighScore: " + this.getHighScore();
         this.time = newTime;
 
         return newTime;
+    }
+
+    setHighScore(highscore) {
+
+        this.highscore = highscore;
+    }
+
+    getHighScore() {
+
+        return this.highscore;
     }
 
     getTime() {

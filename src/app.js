@@ -13,6 +13,7 @@
 import { Gameplay } from './components/gameplay';
 
 var theme = '#ff8f00';
+var highscore = 0;
 
 // set background color
 document.body.style.background = theme;
@@ -88,18 +89,26 @@ function clicked() {
     contain.removeChild(start);
     document.body.removeChild(contain);
 
-    var newGame = new Gameplay(); 
+    var newGame = new Gameplay(highscore); 
     newGame.run();
 
     var running = null;
     function timeLeft() {
-        var time = newGame.scene.state.scoreboard.getTime();
+        var time = newGame.scoreboard.getTime();
         if (time == 0) {
             newGame.kill();
             // window.cancelAnimationFrame(newGame.requestId);
             clearInterval(running);
-            var finalscore = newGame.scene.state.scoreboard.getScore();
-            gameOver(finalscore);
+            var finalscore = newGame.scoreboard.getScore();
+            var high = newGame.scoreboard.getHighScore();
+
+            if (finalscore > highscore) {
+                newGame.scoreboard.setHighScore(finalscore);
+                highscore = finalscore;
+            }
+
+            high = newGame.scoreboard.getHighScore();
+            gameOver(finalscore, high);
         }
     }
 
@@ -108,7 +117,7 @@ function clicked() {
 }
 
 
-function gameOver(finalscore) {
+function gameOver(finalscore, highscore) {
 
     // Game over page
     var title = document.createElement('div');
@@ -125,7 +134,7 @@ function gameOver(finalscore) {
     document.body.append(title);
 
     // Finalscore and restart message
-    var gameDescription = "You final score: " + finalscore + "     Press Restart to Play Again!";
+    var gameDescription = "Your final score: " + finalscore +  "     Current high score:" + highscore + "     Press Restart to Play Again!";
 
     var des = document.createElement('div');
     des.id = 'description';

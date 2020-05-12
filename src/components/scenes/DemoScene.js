@@ -38,8 +38,8 @@ class DemoScene extends Scene {
             camera: null,
         };
 
-        const scoreboard = new Scoreboard(0,60);
-        this.state.scoreboard = scoreboard;
+        // const scoreboard = new Scoreboard(0,10, highscore);
+        // this.state.scoreboard = scoreboard;
         // console.log(scoreboard);
         // console.log(this.state.scoreboard);
 

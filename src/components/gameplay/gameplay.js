@@ -1,12 +1,15 @@
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DemoScene } from 'scenes';
+import {Scoreboard } from 'objects';
 
 class Gameplay {
 
-    constructor() {
+    constructor(highscore) {
         this.requestId = null;
         this.scene = null;
+        this.scoreboard = null;
+        this.highscore = highscore;
     }
 
     run() {
@@ -23,6 +26,10 @@ class Gameplay {
         // camera.position.set(0, 3, -10);
         // camera.lookAt(0,0,0);
         // camera.lookAt(this.scene.state.player1Position);
+
+        const scoreboard = new Scoreboard(0,10, this.highscore);
+        this.scoreboard = scoreboard;
+        scene.state.scoreboard = scoreboard;
 
         // Set up renderer, canvas, and minor CSS adjustments
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -43,12 +50,12 @@ class Gameplay {
 
        var timing = null;
        function timer() {
-           var time = scene.state.scoreboard.getTime();
+           var time = scoreboard.getTime();
            if (time == 0) {
                clearInterval(timing);
            }
            else {
-               scene.state.scoreboard.updateTime();
+               scoreboard.updateTime();
            }
        }
 
