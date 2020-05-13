@@ -1,4 +1,5 @@
 import { Group, MeshBasicMaterial, TextureLoader, Mesh, RepeatWrapping, PlaneBufferGeometry, RGBA_ASTC_10x5_Format } from 'three';
+import WRAP from './textures/preview.jpg';
 
 
 class Ground extends Group {
@@ -24,7 +25,7 @@ class Ground extends Group {
         //    // metalness: 0.3,
         // });
 
-        var texture = new TextureLoader().load("src/components/objects/Ground/textures/preview.jpg");
+        var texture = new TextureLoader().load(WRAP);
 
         texture.wrapS = texture.wrapT = RepeatWrapping;
         texture.repeat.set(100, 100);
